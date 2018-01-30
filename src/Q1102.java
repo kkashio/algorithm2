@@ -12,8 +12,8 @@ public class Q1102 {
         n=sc.nextInt();
         cost=new int[n+1][n+1];
         dp= new int[n+1][1<<n];
-        for(int i=1; i<=n; i++)
-            for (int j=1; j<1<<n; j++)
+        for(int i=0; i<=n; i++)
+            for (int j=0; j<1<<n; j++)
                 dp[i][j] = -1;
         for(int i=1; i<=n; i++)
             for(int j=1; j<=n; j++)
@@ -33,31 +33,23 @@ public class Q1102 {
         k = sc.nextInt();
 
         System.out.println(solve(cnt, t));
-
-        for (int[] a : dp){
-            for (int b : a){
-                System.out.print(b+" ");
-            }
-            System.out.println();
-        }
     }
 
     static int solve(int run, int visited){
         if(run >= k) return 0;
 
-        int ret = dp[run][visited];
-        if(ret != -1) return ret;
-        ret = MAX;
+        if(dp[run][visited] != -1) return dp[run][visited];
+        dp[run][visited] = MAX;
 
         for(int i=1; i<=n; i++){
-            if((visited & (1 <<(i-1))) != 0){
+            if((visited & (1 <<(i-1))) > 0){
                 for (int j=1; j<=n; j++){
                     if((visited & (1 << (j-1))) == 0){
-                        ret = Math.min(ret, solve(run+1, visited | (1 << j-1))) + cost[i][j];
+                        dp[run][visited] = Math.min(dp[run][visited], solve(run+1, (visited | (1 << (j-1))) > 0 ? 1 : 0) + cost[i][j]);
                     }
                 }
             }
         }
-        return ret;
+        return dp[run][visited];
     }
 }
